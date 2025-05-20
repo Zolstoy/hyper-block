@@ -1,19 +1,12 @@
 project('hyper-block', 'cpp', version : '0.1.0',
-  default_options : ['warning_level=3', 'cpp_std=c++20'])
+  default_options : ['cpp_std=c++20'])
 
 # Dependencies
-boost = dependency('boost', version : '>=1.70.0')
-gtest = dependency('gtest', version : '>=1.10.0', required : false)
+boost = dependency('boost')
+gtest = dependency('gtest')
 
 dependencies = [
   boost,
-  gtest,
-]
-
-# Compiler options
-cpp_args = [
-  '-Wall',
-  '-Wextra',
 ]
 
 src = [
@@ -21,18 +14,12 @@ src = [
   'src/main.cpp',
 ]
 
-executable('hyperblock-server', src, dependencies : [boost, gtest],
-  cpp_args : cpp_args,
-  include_directories : include_directories('include'),
-  install : true)
+executable('hyperblock-server', src, dependencies : dependencies)
 
 # Test executable
 test('test_all',
   executable('test_all',
-    ['tests/test_all.cpp'],
-    dependencies: [bnetcpp_dep, tests, network],
-    cpp_args: tests_cpp_args + cpp_args,
-    include_directories: include_directories(['include']),
-    override_options: override
+    ['test_all.cpp'],
+    dependencies: [gtest, boost],
   ),
   args : ['--gtest_color=yes'])
