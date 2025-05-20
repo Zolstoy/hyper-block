@@ -38,3 +38,4 @@ SortIncludes: true
 AllowShortFunctionsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 PackConstructorInitializers: Never
+AlignAfterOpenBracket: AlwaysBreak
