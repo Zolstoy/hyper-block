@@ -37,5 +37,6 @@ test('test_all',
   executable('test_all',
     ['test_all.cpp'],
     dependencies: [gtest, boost],
+    include_directories: include_directories('src'),
   ),
   args : ['--gtest_color=yes'])
