@@ -49,5 +49,5 @@ main(int argc, char **argv)
 
     auto ioc = boost::asio::io_context{1};
 
-    hyper_block::run(ioc, port, ctx);
+    hyper_block::server::run(ioc, port, ctx);
 }

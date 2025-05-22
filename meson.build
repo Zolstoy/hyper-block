@@ -25,7 +25,7 @@ dependencies = [
 
 src = [
   'src/server.cpp',
-  'src/client.cpp',
+  'src/session.cpp',
   'src/player.cpp',
 ]
 
@@ -37,5 +37,6 @@ test('test_all',
     ['test_all.cpp'] + src,
     dependencies: [gtest] + dependencies,
     include_directories: include_directories('src'),
+    cpp_args: cpp_args,
   ),
   args : ['--gtest_color=yes'])

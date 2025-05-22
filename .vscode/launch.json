@@ -1,0 +1,43 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "cppvsdbg",
+            "request": "launch",
+            "name": "Debug hyperblock-server",
+            "program": "${workspaceFolder}/build/${input:executableName}.exe",
+            "cwd": "${workspaceFolder}/build",
+            "args": [
+                "--port",
+                "8080",
+                "--cert",
+                "${input:certPath}",
+                "--key",
+                "${input:keyPath}"
+            ],
+            "stopAtEntry": true,
+            "preLaunchTask": "meson build"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "executableName",
+            "type": "pickString",
+            "description": "Select the executable to debug",
+            "options": [
+                "hyperblock-server",
+                "test_all"
+            ]
+        },
+        {
+            "id": "certPath",
+            "type": "promptString",
+            "description": "Enter the path to the certificate file"
+        },
+        {
+            "id": "keyPath",
+            "type": "promptString",
+            "description": "Enter the path to the private key file"
+        }
+    ]
+}

@@ -14,6 +14,8 @@ using namespace boost;
 
 namespace hyper_block {
 
+namespace server {
+
 void
 run(boost::asio::io_context& io_context, short port, boost::asio::ssl::context& ctx)
 {
@@ -31,5 +33,7 @@ run(boost::asio::io_context& io_context, short port, boost::asio::ssl::context& 
         // Create a new thread for each connection
     }
 }
+
+}   // namespace server
 
 }   // namespace hyper_block
