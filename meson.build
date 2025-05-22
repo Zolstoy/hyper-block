@@ -24,6 +24,7 @@ dependencies = [
 src = [
   'src/server.cpp',
   'src/client.cpp',
+  'src/client.cpp',
   'src/main.cpp',
 ]
 

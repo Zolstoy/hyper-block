@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <memory>
 
+#include "player.hpp"
+
 namespace hyper_block {
 
 class client : public std::enable_shared_from_this<client>
@@ -16,6 +18,7 @@ class client : public std::enable_shared_from_this<client>
    private:
     boost::beast::websocket::stream<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> ws_;
     boost::beast::flat_buffer buffer_;
+    player player_;
 
    public:
     client(boost::asio::ssl::context& ctx, boost::asio::ip::tcp::socket socket);
