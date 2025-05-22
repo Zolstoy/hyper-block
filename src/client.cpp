@@ -7,8 +7,12 @@
 #include <boost/beast/core.hpp>
 #include <boost/beast/websocket.hpp>
 #include <boost/beast/websocket/ssl.hpp>
+#include <cereal/archives/json.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
+
+#include "protocol.hpp"
 
 using namespace boost;
 
@@ -79,6 +83,21 @@ client::on_read(boost::beast::error_code ec, std::size_t bytes_transferred)
         std::cerr << "Read failed: " << ec.message() << std::endl;
         return;
     }
+
+    // Process the message
+    std::string message = beast::buffers_to_string(buffer_.data());
+    buffer_.consume(buffer_.size());
+    std::cout << "Received message: " << message << std::endl;
+
+    std::stringstream ss(message);
+    cereal::JSONInputArchive iarchive(ss);
+
+    protocol::authentication auth;
+
+    iarchive(auth);
+
+    std::cout << "Nickname: " << auth.nickname << std::endl;
+    std::cout << "Password: " << auth.password << std::endl;
 }
 
 }   // namespace hyper_block

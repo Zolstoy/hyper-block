@@ -15,10 +15,12 @@ boost = dependency('boost', modules : [
 
 gtest = dependency('gtest')
 openssl = dependency('openssl')
+cereal = dependency('cereal')
 
 dependencies = [
   boost,
-  openssl
+  openssl,
+  cereal
 ]
 
 src = [
