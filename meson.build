@@ -26,17 +26,16 @@ dependencies = [
 src = [
   'src/server.cpp',
   'src/client.cpp',
-  'src/client.cpp',
-  'src/main.cpp',
+  'src/player.cpp',
 ]
 
-executable('hyperblock-server', src, dependencies : dependencies, cpp_args : cpp_args)
+executable('hyperblock-server', src + 'src/main.cpp', dependencies : dependencies, cpp_args : cpp_args)
 
 # Test executable
 test('test_all',
   executable('test_all',
-    ['test_all.cpp'],
-    dependencies: [gtest, boost],
+    ['test_all.cpp'] + src,
+    dependencies: [gtest] + dependencies,
     include_directories: include_directories('src'),
   ),
   args : ['--gtest_color=yes'])
