@@ -42,6 +42,7 @@ test('test_lib',
     ['test_lib_main.cpp'],
     dependencies: [gtest, gtest_main, boost_headers, openssl],
     include_directories: include_directories('include'),
+    link_with: lib,
     cpp_args: common_cpp_args,
   ),
   args : ['--gtest_color=yes'])

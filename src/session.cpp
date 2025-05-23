@@ -12,6 +12,7 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <utility>
 #include <variant>
 
 #include "protocol.hpp"
@@ -21,24 +22,29 @@ using namespace boost;
 namespace gameserver {
 
 std::shared_ptr<session>
-session::run(boost::asio::ssl::context &ctx, boost::asio::ip::tcp::socket &&socket)
+session::run(boost::asio::ip::tcp::socket &&socket)
 {
-    std::shared_ptr<session> new_session = std::make_shared<session>(ctx, socket);
-    std::get<websocket_type>(new_session->ws_).async_accept(std::bind(&session::on_accept, new_session->shared_from_this(), std::placeholders::_1));
+    std::shared_ptr<session> new_session = std::make_shared<session>(std::move(socket));
+    std::get<plain_websocket>(new_session->ws_).async_accept(std::bind(&session::on_accept, new_session->shared_from_this(), std::placeholders::_1));
     return new_session;
 }
 
 std::shared_ptr<session>
-session::run_with_tls(boost::asio::ssl::context &ctx, boost::asio::ip::tcp::socket &&socket)
+session::run_with_tls(boost::asio::ip::tcp::socket &&socket, boost::asio::ssl::context &ctx)
 {
-    std::shared_ptr<session> new_session = std::make_shared<session>(ctx, socket);
-    std::get<ssl_websocket_type>(new_session->ws_)
+    std::shared_ptr<session> new_session = std::make_shared<session>(std::move(socket), ctx);
+    std::get<tls_websocket>(new_session->ws_)
         .next_layer()
         .async_handshake(boost::asio::ssl::stream_base::server, std::bind(&session::on_handshake, new_session->shared_from_this(), std::placeholders::_1));
     return new_session;
 }
 
-session::session(boost::asio::ssl::context &ctx, boost::asio::ip::tcp::socket &&socket)
+session::session(boost::asio::ip::tcp::socket &&socket)
+    : ws_(std::in_place_index<0>, std::move(socket))
+{}
+
+session::session(boost::asio::ip::tcp::socket &&socket, boost::asio::ssl::context &ctx)
+    : ws_(std::in_place_index<1>, std::move(socket), ctx)
 {}
 
 void
@@ -64,14 +70,9 @@ session::on_accept(boost::beast::error_code ec)
     do_read();
 }
 
-void
-session::do_read()
-{
-    if (std::holds_alternative<websocket_type>(ws_))
-        std::get<websocket_type>(ws_).async_read(buffer_, beast::bind_front_handler(&session::on_read, shared_from_this()));
-    else
-        std::get<ssl_websocket_type>(ws_).async_read(buffer_, beast::bind_front_handler(&session::on_read, shared_from_this()));
-}
+template <typename T>
+concept WebSocket = std::is_same_v<T, session::plain_websocket> || std::is_same_v<T, session::tls_websocket> auto T::do_read()
+{}
 
 void
 session::on_read(boost::beast::error_code ec, std::size_t bytes_transferred)
