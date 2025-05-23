@@ -1,10 +1,10 @@
 #pragma once
 
-#include <cereal/archives/json.hpp>
+// #include <cereal/archives/json.hpp>
 #include <sstream>
 #include <string>
 
-namespace hyper_block {
+namespace gameserver {
 namespace protocol {
 
 struct authentication {
@@ -18,16 +18,8 @@ struct authentication {
                 password);   // serialize things by passing them to the archive
     }
 
-    std::string serialize() const
-    {
-        std::ostringstream oss;
-        {
-            cereal::JSONOutputArchive archive(oss);
-            archive(*this);
-        }
-        return oss.str();
-    }
+    std::string serialize() const;
 };
 
 }   // namespace protocol
-}   // namespace hyper_block
+}   // namespace gameserver

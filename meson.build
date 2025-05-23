@@ -21,7 +21,6 @@ openssl = dependency('openssl')
 cereal = dependency('cereal')
 
 lib_src = [
-  'src/run.cpp',
   'src/session.cpp',
   'src/player.cpp',
 ]
@@ -34,14 +33,14 @@ lib = library('gameserver', lib_src,
 
 executable('hyperblock-server', 'hyperblock_server_main.cpp',
   link_with: lib, cpp_args : common_cpp_args,
-  dependencies : [boost_program_options, boost_headers],
+  dependencies : [boost_program_options, boost_headers, openssl],
   include_directories : include_directories('include'))
 
 # Test executable
 test('test_lib',
   executable('test_lib',
     ['test_lib_main.cpp'],
-    dependencies: [gtest, gtest_main, boost_headers],
+    dependencies: [gtest, gtest_main, boost_headers, openssl],
     include_directories: include_directories('include'),
     cpp_args: common_cpp_args,
   ),
