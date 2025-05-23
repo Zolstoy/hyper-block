@@ -2,18 +2,19 @@
 
 #include <cereal/archives/json.hpp>
 
-
 namespace gameserver {
-class authentication
+namespace protocol {
+
+std::string
+authentication::serialize() const
 {
-    std::string serialize() const
+    std::ostringstream oss;
     {
-        std::ostringstream oss;
-        {
-            cereal::JSONOutputArchive archive(oss);
-            archive(*this);
-        }
-        return oss.str();
+        cereal::JSONOutputArchive archive(oss);
+        archive(*this);
     }
+    return oss.str();
 }
+
+}   // namespace protocol
 }   // namespace gameserver

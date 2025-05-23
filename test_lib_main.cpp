@@ -1,11 +1,12 @@
 #include <gtest/gtest.h>
 
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include <boost/beast.hpp>
 
 // #include "gameserver/instance.hpp"
 #include "gameserver/player.hpp"
-// #include "gameserver/protocol.hpp"
+#include "gameserver/protocol.hpp"
 
 std::string const ca_cert =
     "-----BEGIN CERTIFICATE-----\n"
@@ -83,7 +84,7 @@ std::string const key =
 // Example test case
 TEST(Player, Fields)
 {
-    hyper_block::player p;
+    gameserver::player p;
     p.set_nickname("Player1");
     EXPECT_EQ(p.get_nickname(), "Player1");
 
@@ -110,25 +111,19 @@ TEST(Player, Fields)
 
 TEST(Server, Auth)
 {
-    boost::asio::io_context ioc_server;
+    boost::asio::io_context   io_context;
 
     boost::asio::ssl::context tls_ctx_server{boost::asio::ssl::context::tlsv12};
     tls_ctx_server.use_private_key(boost::asio::buffer(key), boost::asio::ssl::context::pem);
     tls_ctx_server.use_certificate(boost::asio::buffer(cert), boost::asio::ssl::context::pem);
 
-    // std::async() hyper_block::server::run(ioc_server, 4567, tls_ctx_server);
-
-    ASSERT_NO_THROW(ioc_server.run());
-
-    boost::asio::io_context ioc_client;
-
     boost::asio::ssl::context tls_ctx_client{boost::asio::ssl::context::tlsv12};
     tls_ctx_client.use_certificate_chain(boost::asio::buffer(ca_cert));
 
-    boost::asio::ip::tcp::resolver resolver(ioc_client);
-    boost::asio::ip::tcp::resolver::results_type endpoints = resolver.resolve("localhost", std::to_string(4567));
+    boost::asio::ip::tcp::resolver                         resolver(io_context);
+    boost::asio::ip::tcp::resolver::results_type           endpoints = resolver.resolve("localhost", std::to_string(4567));
 
-    boost::asio::ssl::stream<boost::asio::ip::tcp::socket> socket(ioc_client, tls_ctx_client);
+    boost::asio::ssl::stream<boost::asio::ip::tcp::socket> socket(io_context, tls_ctx_client);
     boost::asio::connect(socket.lowest_layer(), endpoints);
     socket.handshake(boost::asio::ssl::stream_base::client);
 

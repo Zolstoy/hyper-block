@@ -1,6 +1,6 @@
 #include "player.hpp"
 
-namespace hyper_block {
+namespace gameserver {
 std::string
 player::get_nickname() const
 {
@@ -41,4 +41,4 @@ player::set_moving(bool is_moving)
 {
     is_moving_ = is_moving;
 }
-}   // namespace hyper_block
+}   // namespace gameserver

@@ -2,7 +2,7 @@
 # options: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 BasedOnStyle: Google
 IndentWidth: 4
-ColumnLimit: 120
+ColumnLimit: 160
 SpaceAfterCStyleCast: true
 UseTab: Never
 AllowShortIfStatementsOnASingleLine: false
@@ -29,3 +29,7 @@ AllowShortLoopsOnASingleLine: false
 PackConstructorInitializers: Never
 AlignAfterOpenBracket: AlwaysBreak
 AllowShortCompoundRequirementOnASingleLine: false
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: false

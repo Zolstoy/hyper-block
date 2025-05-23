@@ -11,10 +11,8 @@ int
 main(int argc, char **argv)
 {
     program_options::options_description desc("Allowed options");
-    desc.add_options()("help,h", "produce help message")(
-        "port,p", program_options::value<int>()->default_value(4567), "set port number")(
-        "cert,c", program_options::value<std::string>(), "set certificate file")(
-        "key,k", program_options::value<std::string>(), "set private key file");
+    desc.add_options()("help,h", "produce help message")("port,p", program_options::value<int>()->default_value(4567), "set port number")(
+        "cert,c", program_options::value<std::string>(), "set certificate file")("key,k", program_options::value<std::string>(), "set private key file");
 
     // program_options::positional_options_description p;
 
@@ -29,19 +27,19 @@ main(int argc, char **argv)
     }
 
     // auto port = vm["port"].as<short>();
-    auto cert_path = vm["cert"].as<std::string>();
-    auto key_path = vm["key"].as<std::string>();
+    auto               cert_path = vm["cert"].as<std::string>();
+    auto               key_path = vm["key"].as<std::string>();
 
-    std::ifstream cert_file(cert_path);
+    std::ifstream      cert_file(cert_path);
     std::ostringstream os;
     os << cert_file.rdbuf();
-    std::string cert = os.str();
+    std::string   cert = os.str();
 
     std::ifstream key_file(key_path);
     os.str("");
     os.clear();
     os << key_file.rdbuf();
-    std::string key = os.str();
+    std::string        key = os.str();
 
     asio::ssl::context ctx{asio::ssl::context::tlsv12};
     ctx.use_certificate_chain(boost::asio::buffer(cert.data(), cert.size()));

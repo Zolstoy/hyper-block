@@ -10,26 +10,36 @@
 #include <cereal/archives/json.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <sstream>
+#include <variant>
 
 #include "protocol.hpp"
 
 using namespace boost;
 
-namespace hyper_block {
+namespace gameserver {
 
-template <bool SSL>
-session<SSL>::session(boost::asio::ssl::context &ctx, boost::asio::ip::tcp::socket socket)
-    : ws_(std::move(socket), ctx)
-{}
-
-template <>
-void
-session<true>::run()
+std::shared_ptr<session>
+session::run(boost::asio::ssl::context &ctx, boost::asio::ip::tcp::socket &&socket)
 {
-    ws_.next_layer().async_handshake(
-        asio::ssl::stream_base::server, beast::bind_front_handler(&session::on_handshake, shared_from_this()));
+    std::shared_ptr<session> new_session = std::make_shared<session>(ctx, socket);
+    std::get<websocket_type>(new_session->ws_).async_accept(std::bind(&session::on_accept, new_session->shared_from_this(), std::placeholders::_1));
+    return new_session;
 }
+
+std::shared_ptr<session>
+session::run_with_tls(boost::asio::ssl::context &ctx, boost::asio::ip::tcp::socket &&socket)
+{
+    std::shared_ptr<session> new_session = std::make_shared<session>(ctx, socket);
+    std::get<ssl_websocket_type>(new_session->ws_)
+        .next_layer()
+        .async_handshake(boost::asio::ssl::stream_base::server, std::bind(&session::on_handshake, new_session->shared_from_this(), std::placeholders::_1));
+    return new_session;
+}
+
+session::session(boost::asio::ssl::context &ctx, boost::asio::ip::tcp::socket &&socket)
+{}
 
 void
 session::on_handshake(boost::beast::error_code ec)
@@ -39,10 +49,6 @@ session::on_handshake(boost::beast::error_code ec)
         std::cerr << "Handshake failed: " << ec.message() << std::endl;
         return;
     }
-
-    ws_.set_option(beast::websocket::stream_base::timeout::suggested(beast::role_type::server));
-
-    ws_.async_accept(beast::bind_front_handler(&session::on_accept, shared_from_this()));
 }
 
 void
@@ -61,8 +67,10 @@ session::on_accept(boost::beast::error_code ec)
 void
 session::do_read()
 {
-    // Read a message into our buffer
-    ws_.async_read(buffer_, beast::bind_front_handler(&session::on_read, shared_from_this()));
+    if (std::holds_alternative<websocket_type>(ws_))
+        std::get<websocket_type>(ws_).async_read(buffer_, beast::bind_front_handler(&session::on_read, shared_from_this()));
+    else
+        std::get<ssl_websocket_type>(ws_).async_read(buffer_, beast::bind_front_handler(&session::on_read, shared_from_this()));
 }
 
 void
@@ -85,7 +93,7 @@ session::on_read(boost::beast::error_code ec, std::size_t bytes_transferred)
     buffer_.consume(buffer_.size());
     std::cout << "Received message: " << message << std::endl;
 
-    std::stringstream ss(message);
+    std::stringstream        ss(message);
     cereal::JSONInputArchive iarchive(ss);
 
     protocol::authentication auth;
@@ -96,4 +104,4 @@ session::on_read(boost::beast::error_code ec, std::size_t bytes_transferred)
     std::cout << "Password: " << auth.password << std::endl;
 }
 
-}   // namespace hyper_block
+}   // namespace gameserver
