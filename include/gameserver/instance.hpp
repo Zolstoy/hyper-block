@@ -20,15 +20,16 @@ concept UserRoutines = requires(T t) {
     } -> std::same_as<void>;
 };
 
-template <UserRoutines T>
-class instance : public std::enable_shared_from_this<instance<T>>
+template <UserRoutines UR>
+class instance : public std::enable_shared_from_this<instance<UR>>
 {
    private:
     boost::asio::io_context       &io_context_;
     boost::asio::ssl::context     &ssl_context_;
     boost::asio::ip::tcp::acceptor acceptor_;
-    T                              user_routine_;
-    std::vector<session>           sessions_;
+    UR                             user_routines_;
+    std::vector<session<true>>     player_sessions_;
+    std::vector<session<false>>    bot_sessions_;
 
    private:
     instance(boost::asio::io_context &io_context, boost::asio::ssl::context &&ssl_context, boost::asio::ip::tcp::acceptor &&acceptor)
@@ -38,7 +39,7 @@ class instance : public std::enable_shared_from_this<instance<T>>
     {}
 
    public:
-    static std::shared_ptr<instance<T>> run(boost::asio::io_context &io_context, boost::asio::ssl::context &ssl_context, unsigned short port)
+    static std::shared_ptr<instance<UR>> run(boost::asio::io_context &io_context, boost::asio::ssl::context &ssl_context, unsigned short port)
     {
         auto inst = instance(io_context, std::move(ssl_context), boost::asio::ip::tcp::acceptor(io_context, {boost::asio::ip::tcp::v4(), port}));
 
@@ -48,14 +49,14 @@ class instance : public std::enable_shared_from_this<instance<T>>
 
     void do_accept()
     {
-        acceptor_.async_accept(std::bind(&instance<T>::on_accept, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+        acceptor_.async_accept(std::bind(&instance<UR>::on_accept, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
     }
 
     void on_accept(const boost::system::error_code &ec, boost::asio::ip::tcp::socket socket)
     {
         if (!ec)
         {
-            auto new_session = session::run(ssl_context_, std::move(socket));
+            auto new_session = gameserver::session<true>::run(std::move(socket), ssl_context_);
         } else
         {
             // Handle error

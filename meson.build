@@ -33,14 +33,14 @@ lib = library('gameserver', lib_src,
 
 executable('hyperblock-server', 'hyperblock_server_main.cpp',
   link_with: lib, cpp_args : common_cpp_args,
-  dependencies : [boost_program_options, boost_headers, openssl],
+  dependencies : [boost_program_options, boost_headers, openssl, cereal],
   include_directories : include_directories('include'))
 
 # Test executable
 test('test_lib',
   executable('test_lib',
     ['test_lib_main.cpp'],
-    dependencies: [gtest, gtest_main, boost_headers, openssl],
+    dependencies: [gtest, gtest_main, boost_headers, openssl, cereal],
     include_directories: include_directories('include'),
     link_with: lib,
     cpp_args: common_cpp_args,
