@@ -12,9 +12,10 @@ struct authentication {
     std::string password;
 
     template <class Archive>
-    void serialize(Archive& archive)
+    void serialize(Archive &archive)
     {
-        archive(nickname, password);   // serialize things by passing them to the archive
+        archive(nickname,
+                password);   // serialize things by passing them to the archive
     }
 
     std::string serialize() const

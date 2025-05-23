@@ -1,3 +1,5 @@
+#include "session.hpp"
+
 #include <boost/asio/dispatch.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/asio/ssl/context.hpp>
@@ -11,25 +13,19 @@
 #include <sstream>
 
 #include "protocol.hpp"
-#include "session.hpp"
-
 
 using namespace boost;
 
 namespace hyper_block {
 
-session::session(boost::asio::ssl::context& ctx, boost::asio::ip::tcp::socket socket)
+template <bool SSL>
+session<SSL>::session(boost::asio::ssl::context &ctx, boost::asio::ip::tcp::socket socket)
     : ws_(std::move(socket), ctx)
 {}
 
+template <>
 void
-session::run()
-{
-    asio::dispatch(ws_.get_executor(), boost::beast::bind_front_handler(&session::on_run, shared_from_this()));
-}
-
-void
-session::on_run()
+session<true>::run()
 {
     ws_.next_layer().async_handshake(
         asio::ssl::stream_base::server, beast::bind_front_handler(&session::on_handshake, shared_from_this()));
