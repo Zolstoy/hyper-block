@@ -81,70 +81,67 @@ std::string const key =
     "-----END PRIVATE KEY-----";
 
 // Example test case
-TEST(Player, Fields)
-{
-    hyper_block::player p;
-    p.set_nickname("Player1");
-    EXPECT_EQ(p.get_nickname(), "Player1");
+TEST(Player, Fields) {
+  hyper_block::player p;
+  p.set_nickname("Player1");
+  EXPECT_EQ(p.get_nickname(), "Player1");
 
-    boost::numeric::ublas::vector<double> position(3);
-    position[0] = 1.0;
-    position[1] = 2.0;
-    position[2] = 3.0;
-    p.set_position(position);
-    EXPECT_EQ(p.get_position()[0], 1.0);
-    EXPECT_EQ(p.get_position()[1], 2.0);
-    EXPECT_EQ(p.get_position()[2], 3.0);
-    EXPECT_EQ(p.get_position().size(), 3);
+  boost::numeric::ublas::vector<double> position(3);
+  position[0] = 1.0;
+  position[1] = 2.0;
+  position[2] = 3.0;
+  p.set_position(position);
+  EXPECT_EQ(p.get_position()[0], 1.0);
+  EXPECT_EQ(p.get_position()[1], 2.0);
+  EXPECT_EQ(p.get_position()[2], 3.0);
+  EXPECT_EQ(p.get_position().size(), 3);
 
-    p.set_facing_right(true);
-    EXPECT_TRUE(p.is_facing_right());
+  p.set_facing_right(true);
+  EXPECT_TRUE(p.is_facing_right());
 
-    p.set_moving(true);
-    EXPECT_TRUE(p.is_moving());
-    p.set_moving(false);
-    EXPECT_FALSE(p.is_moving());
-    p.set_facing_right(false);
-    EXPECT_FALSE(p.is_facing_right());
+  p.set_moving(true);
+  EXPECT_TRUE(p.is_moving());
+  p.set_moving(false);
+  EXPECT_FALSE(p.is_moving());
+  p.set_facing_right(false);
+  EXPECT_FALSE(p.is_facing_right());
 }
 
-TEST(Server, Auth)
-{
-    boost::asio::io_context ioc_server;
+TEST(Server, Auth) {
+  boost::asio::io_context ioc_server;
 
-    boost::asio::ssl::context tls_ctx_server{boost::asio::ssl::context::tlsv12};
-    tls_ctx_server.use_private_key(boost::asio::buffer(key), boost::asio::ssl::context::pem);
-    tls_ctx_server.use_certificate(boost::asio::buffer(cert), boost::asio::ssl::context::pem);
+  boost::asio::ssl::context tls_ctx_server{boost::asio::ssl::context::tlsv12};
+  tls_ctx_server.use_private_key(boost::asio::buffer(key),
+                                 boost::asio::ssl::context::pem);
+  tls_ctx_server.use_certificate(boost::asio::buffer(cert),
+                                 boost::asio::ssl::context::pem);
 
-    std::async() hyper_block::server::run(ioc_server, 4567, tls_ctx_server);
+  std::async() hyper_block::server::run(ioc_server, 4567, tls_ctx_server);
 
-    ASSERT_NO_THROW(ioc_server.run());
+  ASSERT_NO_THROW(ioc_server.run());
 
-    boost::asio::io_context ioc_client;
+  boost::asio::io_context ioc_client;
 
-    boost::asio::ssl::context tls_ctx_client{boost::asio::ssl::context::tlsv12};
-    tls_ctx_client.use_certificate_chain(boost::asio::buffer(ca_cert));
+  boost::asio::ssl::context tls_ctx_client{boost::asio::ssl::context::tlsv12};
+  tls_ctx_client.use_certificate_chain(boost::asio::buffer(ca_cert));
 
-    boost::asio::ip::tcp::resolver resolver(ioc_client);
-    boost::asio::ip::tcp::resolver::results_type endpoints = resolver.resolve("localhost", std::to_string(4567));
+  boost::asio::ip::tcp::resolver resolver(ioc_client);
+  boost::asio::ip::tcp::resolver::results_type endpoints =
+      resolver.resolve("localhost", std::to_string(4567));
 
-    boost::asio::ssl::stream<boost::asio::ip::tcp::socket> socket(ioc_client, tls_ctx_client);
-    boost::asio::connect(socket.lowest_layer(), endpoints);
-    socket.handshake(boost::asio::ssl::stream_base::client);
+  boost::asio::ssl::stream<boost::asio::ip::tcp::socket> socket(ioc_client,
+                                                                tls_ctx_client);
+  boost::asio::connect(socket.lowest_layer(), endpoints);
+  socket.handshake(boost::asio::ssl::stream_base::client);
 
-    hyper_block::protocol::authentication req;
-    req.nickname = "Player1";
-    req.password = "password";
+  hyper_block::protocol::authentication req;
+  req.nickname = "Player1";
+  req.password = "password";
 
-    boost::beast::websocket::stream<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> ws(std::move(socket));
+  boost::beast::websocket::stream<
+      boost::asio::ssl::stream<boost::asio::ip::tcp::socket>>
+      ws(std::move(socket));
 
-    ws.handshake("localhost", "/");
-    ws.write(boost::asio::buffer(req.serialize()));
-}
-
-int
-main(int argc, char **argv)
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+  ws.handshake("localhost", "/");
+  ws.write(boost::asio::buffer(req.serialize()));
 }
