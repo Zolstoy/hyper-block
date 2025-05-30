@@ -32,6 +32,9 @@ jobs:
           path: .
           github-token: ${{ secrets.GH_PAT }}
 
+      - run: |
+          ls -l .
+
       - name: Run Meson
         env:
           BOOST_ROOT: "${{ github.workspace }}/boost/boost"
