@@ -29,7 +29,7 @@ jobs:
         with:
           run-id: ${{ steps.get_run_id.outputs.value }}
           name: build
-          path: build
+          path: .
           github-token: ${{ secrets.GH_PAT }}
 
       - name: Run Meson
