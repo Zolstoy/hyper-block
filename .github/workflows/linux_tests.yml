@@ -10,15 +10,13 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Get Event JSON
+      - name: Get event json
         id: get_event_json
         run: |
           content=`cat ${GITHUB_EVENT_PATH}`
-          # the following lines are only required for multi line json
-          # content="${content//'%'/''}"
+          content="${content//'%'/''}"
           content="${content//$'\n'/''}"
           content="${content//$'\r'/''}"
-          # end of optional handling for multi line json
           echo "value=${content}" >> ${GITHUB_OUTPUT}
 
       - name: Get run id
@@ -32,4 +30,10 @@ jobs:
           run-id: ${{ steps.get_run_id.outputs.value }}
           name: build
           github-token: ${{ secrets.GH_PAT }}
- 
+
+      - name: Run Meson
+        env:
+          BOOST_ROOT: "${{ github.workspace }}/boost/boost"
+        run: |
+          pip install meson ninja
+          meson test -C build -v

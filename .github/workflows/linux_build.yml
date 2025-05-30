@@ -17,40 +17,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - run: echo 42 > file
-
-      - uses: actions/upload-artifact@v4
+      - name: Install Boost
+        uses: MarkusJx/install-boost@v2
         with:
-          path: file
+          boost_version: 1.87.0
+          platform_version: 22.04
+          toolset: gcc
+          arch: x86
+
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: latest
+          platform: x64
+
+      - name: Run Meson compile
+        env:
+          BOOST_ROOT: "${{ github.workspace }}/boost/boost"
+        run: |
+          pip install meson ninja
+          meson setup --backend=ninja build
+          meson compile -C build -v
+
+      - name: Upload build dir
+        uses: actions/upload-artifact@v4
+        with:
           name: build
-      # - name: Install Boost
-      #   uses: MarkusJx/install-boost@v2
-      #   with:
-      #     boost_version: 1.87.0
-      #     platform_version: 22.04
-      #     toolset: gcc
-      #     arch: x86
-
-      # - name: Set up GCC
-      #   uses: egor-tensin/setup-gcc@v1
-      #   with:
-      #     version: latest
-      #     platform: x64
-
-      # - name: Run Meson compile
-      #   env:
-      #     BOOST_ROOT: "${{ github.workspace }}/boost/boost"
-      #   run: |
-      #     pip install meson ninja
-      #     meson setup --backend=ninja build
-      #     meson compile -C build -v
-
-      # - name: Upload build dir
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: build
-      #     path: build
-      #     if-no-files-found: error
-      #     overwrite: true
-      #     include-hidden-files: true
+          path: build
+          if-no-files-found: error
+          overwrite: true
+          include-hidden-files: true
   
