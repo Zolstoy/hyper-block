@@ -40,7 +40,7 @@ jobs:
           meson compile -C build -v
 
       - name: Tar build and meson build
-        run: tar -zxvf data.tar.gz build meson.build
+        run: tar -zcvf data.tar.gz build meson.build
 
       - name: Upload build dir
         uses: actions/upload-artifact@v4
