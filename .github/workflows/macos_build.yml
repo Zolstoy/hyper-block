@@ -41,9 +41,11 @@ jobs:
           CXX: "clang++"
           LD: "lld"
         run: |
-          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson setup --backend=ninja build
-          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson test -C build -v
+          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson setup --backend=ninja build --prefer-static
+          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson compile -C build -v
 
+      - name: Tar build and meson build
+        run: tar -zcvf data.tar.gz build/tests-details build/tests-siege
 
       - name: Upload build dir
         uses: actions/upload-artifact@v4

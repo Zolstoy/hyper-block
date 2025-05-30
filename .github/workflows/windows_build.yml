@@ -28,17 +28,17 @@ jobs:
       - name: Setup MSVC environment
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Run Meson setup
+      - name: Run Meson compile
         env:
           BOOST_ROOT: "${{ github.workspace }}/boost/boost"
         run: |
           pip install meson ninja
-          meson setup --backend=ninja build
-          meson test -C build -v
+          meson setup --backend=ninja build --prefer-static
+          meson compile -C build -v
 
 
       - name: Tar build and meson build
-        run: tar -zcvf data.tar.gz build/tests-details build/tests-siege
+        run: tar -zcvf data.tar.gz build/tests-details.exe build/tests-siege.exe
 
       - name: Upload build dir
         uses: actions/upload-artifact@v4
