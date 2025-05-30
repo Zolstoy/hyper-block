@@ -1,8 +1,9 @@
 name: LINUX|TESTS
 on:
   workflow_run:
-    branches: main
-    types: completed
+    workflows: [LINUX|BUILD]
+    branches: [main]
+    types: [completed]
 
   push:
     branches:
@@ -23,3 +24,4 @@ jobs:
         with:
           name: build
           github-token: ${{ secrets.GH_PATH }}
+          run_id: ${{ context.payload.workflow_run.id }}

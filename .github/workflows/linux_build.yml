@@ -39,7 +39,7 @@ jobs:
           meson setup --backend=ninja build
           meson compile -C build -v
 
-      - name: Upload build
+      - name: Upload build dir
         uses: actions/upload-artifact@v4
         with:
           name: build
