@@ -19,9 +19,4 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Download build
-        uses: actions/download-artifact@v4
-        with:
-          name: build
-          github-token: ${{ secrets.GH_PATH }}
-          run_id: ${{ context.payload.workflow_run.id }}
+      - run: cat ${{ env.GITHUB_EVENT_PATH }}
