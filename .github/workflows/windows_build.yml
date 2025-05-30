@@ -1,4 +1,4 @@
-name: Windows
+name: WINDOWS|BUILD
 on:
   push:
     branches:
@@ -7,12 +7,12 @@ on:
       - '**.hpp'
       - '**.cpp'
       - 'meson.build'
-      - '.github/workflows/windows.yml'
+      - '.github/workflows/windows_*.yml'
 
 jobs:
   build:
     name: Build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,3 +35,16 @@ jobs:
           pip install meson ninja
           meson setup --backend=ninja build
           meson test -C build -v
+
+
+      - name: Tar build and meson build
+        run: tar -zcvf data.tar.gz build/tests-details build/tests-siege
+
+      - name: Upload build dir
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests
+          path: data.tar.gz
+          if-no-files-found: error
+          overwrite: true
+          include-hidden-files: true

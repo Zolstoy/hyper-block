@@ -1,14 +1,14 @@
-name: LINUX|TESTS
+name: WINDOWS|TESTS
 on:
   workflow_run:
-    workflows: [LINUX|BUILD]
+    workflows: [WINDOWS|BUILD]
     branches: [main]
     types: [completed]
 
 jobs:
   tests:
     name: Tests
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Get event json
         id: get_event_json

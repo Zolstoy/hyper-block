@@ -1,4 +1,4 @@
-name: MacOS
+name: LINUX|BUILD
 on:
   push:
     branches:
@@ -7,12 +7,12 @@ on:
       - '**.hpp'
       - '**.cpp'
       - 'meson.build'
-      - '.github/workflows/macos.yml'
+      - '.github/workflows/linux_*.yml'
 
 jobs:
   build:
     name: Build
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,3 +43,13 @@ jobs:
         run: |
           PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson setup --backend=ninja build
           PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson test -C build -v
+
+
+      - name: Upload build dir
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests
+          path: data.tar.gz
+          if-no-files-found: error
+          overwrite: true
+          include-hidden-files: true

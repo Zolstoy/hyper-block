@@ -1,14 +1,14 @@
-name: LINUX|TESTS
+name: MACOS|TESTS
 on:
   workflow_run:
-    workflows: [LINUX|BUILD]
+    workflows: [MACOS|BUILD]
     branches: [main]
     types: [completed]
 
 jobs:
   tests:
     name: Tests
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Get event json
         id: get_event_json
