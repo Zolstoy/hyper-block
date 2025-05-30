@@ -1,4 +1,4 @@
-name: Linux
+name: LINUX|BUILD
 on:
   push:
     branches:
@@ -7,7 +7,7 @@ on:
       - '**.hpp'
       - '**.cpp'
       - 'meson.build'
-      - '.github/workflows/linux.yml'
+      - '.github/workflows/linux_build.yml'
 
 jobs:
   build:
@@ -31,10 +31,19 @@ jobs:
           version: latest
           platform: x64
 
-      - name: Run meson manually
+      - name: Run Meson compile
         env:
           BOOST_ROOT: "${{ github.workspace }}/boost/boost"
         run: |
           pip install meson ninja
           meson setup --backend=ninja build
-          meson test -C build -v
+          meson compile -C build -v
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build
+          if-no-files-found: error
+          overwrite: true
+            include-hidden-files: true
