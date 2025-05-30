@@ -1,5 +1,5 @@
 name: WINDOWS|TESTS
-on:
+on: 
   workflow_run:
     workflows: [WINDOWS|BUILD]
     branches: [main]

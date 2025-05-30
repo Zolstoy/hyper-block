@@ -7,7 +7,7 @@ on:
       - '**.hpp'
       - '**.cpp'
       - 'meson.build'
-      - '.github/workflows/linux_*.yml'
+      - '.github/workflows/macos_*.yml'
 
 jobs:
   build:

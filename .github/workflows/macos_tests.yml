@@ -1,5 +1,5 @@
 name: MACOS|TESTS
-on:
+on: 
   workflow_run:
     workflows: [MACOS|BUILD]
     branches: [main]
