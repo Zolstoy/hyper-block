@@ -31,3 +31,4 @@ jobs:
         with:
           run-id: ${{ steps.get_run_id.outputs.value }}
           name: build
+          github-token: ${{ secrets.GH_PAT }}
