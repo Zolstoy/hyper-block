@@ -29,7 +29,8 @@ jobs:
           # end of optional handling for multi line json
           echo "json=${content}" >> ${GITHUB_OUTPUT}
       - run: |
-          echo ${{ fromJSON(steps.set_var.outputs.json).id }}
+          echo ${{ fromJSON(steps.set_var.outputs.json) }}
+          echo ${{ fromJSON(steps.set_var.outputs.json).workflow_run.id }}
 
 
 # workflow_run.id
