@@ -32,8 +32,7 @@ jobs:
           path: .
           github-token: ${{ secrets.GH_PAT }}
 
-      - run: |
-          ls -l .
+      - run: tar zxvf data.tar.gz
 
       - name: Run Meson
         env:
