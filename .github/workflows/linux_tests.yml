@@ -27,9 +27,9 @@ jobs:
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
           # end of optional handling for multi line json
-          echo "::set-output name=packageJson::$content"
+          echo "json=$content" >> $GITHUB_OUTPUT
       - run: |
-          echo "${{fromJson(steps.set_var.outputs.packageJson).version}}"
+          echo ${{ github.tests.set_var.outputs.json }}
 
 
 # workflow_run.id
