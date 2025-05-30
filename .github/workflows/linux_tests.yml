@@ -34,4 +34,5 @@ jobs:
 
       - run: tar zxvf data.tar.gz
 
-      - run: ./build/tests-details.exe
+      - run: ./build/tests-details
+
