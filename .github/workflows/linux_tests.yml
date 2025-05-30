@@ -24,15 +24,14 @@ jobs:
         run: |
           echo "value="${{ fromJson(steps.get_event_json.outputs.value).workflow_run.id }} >> ${GITHUB_OUTPUT}
 
-      - name: Get run artifact
+      - name: Get tests binaries
         uses: actions/download-artifact@v4
         with:
           run-id: ${{ steps.get_run_id.outputs.value }}
-          name: build
-          path: .
+          name: tests
           github-token: ${{ secrets.GH_PAT }}
 
       - run: tar zxvf data.tar.gz
-
+      - run: ls -lR
+      - run: ./tests-details
       - run: ./build/tests-details
-
