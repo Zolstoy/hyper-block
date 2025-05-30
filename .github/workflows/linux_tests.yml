@@ -17,3 +17,19 @@ jobs:
           cat ${{ env.GITHUB_EVENT_PATH }}
           cat ${{ github.env.GITHUB_EVENT_PATH }}
           cat ${GITHUB_EVENT_PATH}
+
+
+      - id: set_var
+        run: |
+          content=`cat ${GITHUB_EVENT_PATH}`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "::set-output name=packageJson::$content"
+      - run: |
+          echo "${{fromJson(steps.set_var.outputs.packageJson).version}}"
+
+
+# workflow_run.id
