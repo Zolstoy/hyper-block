@@ -34,9 +34,4 @@ jobs:
 
       - run: tar zxvf data.tar.gz
 
-      - name: Run Meson
-        env:
-          BOOST_ROOT: "${{ github.workspace }}/boost/boost"
-        run: |
-          pip install meson ninja
-          meson test -C build -v
+      - run: ./build/tests-details.exe
