@@ -24,7 +24,7 @@ jobs:
       - name: Get run id
         id: get_run_id
         run: |
-          echo "value="${{ fromJson(steps.get_even_json.outputs.value).workflow_run.id }} >> ${GITHUB_OUTPUT}
+          echo "value="${{ fromJson(steps.get_event_json.outputs.value).workflow_run.id }} >> ${GITHUB_OUTPUT}
 
       - name: Get run artifact
         uses: actions/download-artifact@v4
