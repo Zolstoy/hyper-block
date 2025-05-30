@@ -1,4 +1,4 @@
-name: LINUX|BUILD
+name: MACOS|BUILD
 on:
   push:
     branches:
@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
