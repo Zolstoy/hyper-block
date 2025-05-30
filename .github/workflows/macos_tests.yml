@@ -21,7 +21,7 @@ jobs:
 
       - name: Get run id
         id: get_run_id
-        run: |
+        run: | 
           echo "value="${{ fromJson(steps.get_event_json.outputs.value).workflow_run.id }} >> ${GITHUB_OUTPUT}
 
       - name: Get tests binaries

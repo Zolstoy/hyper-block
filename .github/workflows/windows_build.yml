@@ -33,7 +33,8 @@ jobs:
           BOOST_ROOT: "${{ github.workspace }}/boost/boost"
         run: |
           pip install meson ninja
-          meson setup --backend=ninja build --prefer-static
+          mkdir install
+          meson setup --backend=ninja build --prefix=./install
           meson compile -C build -v
 
 
