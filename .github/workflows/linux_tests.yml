@@ -12,7 +12,7 @@ on:
       - '**.hpp'
       - '**.cpp'
       - 'meson.build'
-      - '.github/workflows/linux_tests.yml'
+      - '.github/workflows/linux_*.yml'
 
 jobs:
   build:
