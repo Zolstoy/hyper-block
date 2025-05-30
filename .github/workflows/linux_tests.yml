@@ -10,16 +10,8 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo ${{ env.GITHUB_EVENT_PATH }}
-          echo ${{ github.env.GITHUB_EVENT_PATH }}
-          echo ${GITHUB_EVENT_PATH}
-          cat ${{ env.GITHUB_EVENT_PATH }}
-          cat ${{ github.env.GITHUB_EVENT_PATH }}
-          cat ${GITHUB_EVENT_PATH}
-
-
-      - id: set_var
+      - name: Get Event JSON
+        id: get_event_json
         run: |
           content=`cat ${GITHUB_EVENT_PATH}`
           # the following lines are only required for multi line json
@@ -27,10 +19,15 @@ jobs:
           content="${content//$'\n'/''}"
           content="${content//$'\r'/''}"
           # end of optional handling for multi line json
-          echo "json=${content}" >> ${GITHUB_OUTPUT}
-      - run: |
-          echo ${{ fromJson(steps.set_var.outputs.json) }}
-          echo ${{ fromJson(steps.set_var.outputs.json).workflow_run.id }}
+          echo "value=${content}" >> ${GITHUB_OUTPUT}
 
+      - name: Get run id
+        id: get_run_id
+        run: |
+          echo "value="${{ fromJson(steps.get_even_json.outputs.value).workflow_run.id }} >> ${GITHUB_OUTPUT}
 
-# workflow_run.id
+      - name: Get run artifact
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ steps.get_run_id.outputs.value }}
+          name: build
