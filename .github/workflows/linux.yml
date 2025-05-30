@@ -1,0 +1,40 @@
+name: Linux
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.hpp'
+      - '**.cpp'
+      - 'meson.build'
+      - '.github/workflows/linux.yml'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Boost
+        uses: MarkusJx/install-boost@v2
+        with:
+          boost_version: 1.87.0
+          platform_version: 22.04
+          toolset: gcc
+          arch: x86
+
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: latest
+          platform: x64
+
+      - name: Run meson manually
+        env:
+          BOOST_ROOT: "${{ github.workspace }}/boost/boost"
+        run: |
+          pip install meson ninja
+          meson setup --backend=ninja build
+          meson test -C build -v

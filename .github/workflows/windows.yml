@@ -1,0 +1,37 @@
+name: Windows
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.hpp'
+      - '**.cpp'
+      - 'meson.build'
+      - '.github/workflows/windows.yml'
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Boost
+        uses: MarkusJx/install-boost@v2
+        with:
+          boost_version: 1.87.0
+          platform_version: 2022
+          toolset: msvc
+          link: shared
+
+      - name: Setup MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Run Meson setup
+        env:
+          BOOST_ROOT: "${{ github.workspace }}/boost/boost"
+        run: |
+          pip install meson ninja
+          meson setup --backend=ninja build
+          meson test -C build -v

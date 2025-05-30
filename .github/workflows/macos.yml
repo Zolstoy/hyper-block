@@ -1,0 +1,45 @@
+name: MacOS
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.hpp'
+      - '**.cpp'
+      - 'meson.build'
+      - '.github/workflows/macos.yml'
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Boost
+        uses: MarkusJx/install-boost@v2
+        with:
+          boost_version: 1.87.0
+          platform_version: 15
+          toolset: clang
+          arch: aarch64
+
+      - name: Install clang
+        run: |
+          brew install llvm@20
+          brew install lld@20
+
+      - name: Install Meson and Ninja
+        run: pip install meson ninja
+
+      - name: Run Meson
+        env:
+          BOOST_ROOT: "${{ github.workspace }}/boost/boost"
+          LDFLAGS: "-L/opt/homebrew/opt/llvm/lib -L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+          CPPFLAGS: "-I/opt/homebrew/opt/llvm/include"
+          CXX: "clang++"
+          LD: "lld"
+        run: |
+          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson setup --backend=ninja build
+          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson test -C build -v
