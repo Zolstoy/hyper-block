@@ -23,14 +23,14 @@ jobs:
         run: |
           content=`cat ${GITHUB_EVENT_PATH}`
           # the following lines are only required for multi line json
-          # content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
+          # content="${content//'%'/''}"
+          content="${content//$'\n'/''}"
+          content="${content//$'\r'/''}"
           # end of optional handling for multi line json
           echo "json=${content}" >> ${GITHUB_OUTPUT}
       - run: |
-          echo ${{ fromJSON(steps.set_var.outputs.json) }}
-          echo ${{ fromJSON(steps.set_var.outputs.json).workflow_run.id }}
+          echo ${{ fromJson(steps.set_var.outputs.json) }}
+          echo ${{ fromJson(steps.set_var.outputs.json).workflow_run.id }}
 
 
 # workflow_run.id
