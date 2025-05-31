@@ -1,8 +1,8 @@
-project('hyper-block', 'cpp', version : '0.1.0', meson_version : '>=1.6.0')
+project('hyper-block', 'cpp', version : '0.1.0', meson_version : '>=1.0.0')
 
 if host_machine.system() == 'windows'
  override_args = ['cpp_std=vc++latest']
- common_cpp_args =  ['-DWIN32_LEAN_AND_MEAN', '-D_WIN32_WINNT=0x0601', '/bigobj', '-DBOOST_PROGRAM_OPTIONS_DYN_LINK=1']
+ common_cpp_args =  ['-D_WIN32_WINNT=0x0601', '/bigobj']
 else
  override_args = ['cpp_std=c++23']
  common_cpp_args = []
@@ -11,7 +11,7 @@ endif
 boost_headers = dependency('boost')
 openssl = dependency('openssl')
 cereal = dependency('cereal')
-spdlog = dependency('spdlog', default_options: ['default_library=static'])
+spdlog = dependency('spdlog', install: false)
 
 dependencies = [
   boost_headers,
@@ -35,7 +35,8 @@ server = executable('hyperblock-server',
   dependencies : dependencies + [boost_program_options],
   include_directories : include_directories('src'),
   cpp_args : common_cpp_args,
-  override_options: override_args
+  override_options: override_args,
+  install: true
 )
 
 tests_details = executable('tests-details',
@@ -43,7 +44,8 @@ tests_details = executable('tests-details',
   dependencies: dependencies + [gtest, spdlog],
   include_directories: include_directories('src'),
   cpp_args: common_cpp_args + ['-DHYPERBLOCK_STEPBYSTEP'],
-  override_options: override_args
+  override_options: override_args,
+  install: true
 )
   
 test('details', tests_details, args : ['--gtest_color=yes'])
@@ -53,7 +55,8 @@ tests_siege = executable('tests-siege',
   dependencies: dependencies + [gtest, gtest_main, spdlog],
   include_directories: include_directories('src'),
   cpp_args: common_cpp_args,
-  override_options: override_args 
+  override_options: override_args,
+  install: true
 )
 
 test('siege', tests_siege, args : ['--gtest_color=yes'])
