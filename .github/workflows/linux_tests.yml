@@ -47,5 +47,5 @@ jobs:
 
       - run: tar zxvf install.tar.gz
 
-      - run: LDFLAGS=./install/lib ./install/bin/tests-details
-      - run: LDFLAGS=./install/lib ./install/bin/tests-siege
+      - run: LDFLAGS=./install/lib/x86_64-linux-gnu ./install/bin/tests-details
+      - run: LDFLAGS=./install/lib/x86_64-linux-gnu ./install/bin/tests-siege
