@@ -31,6 +31,7 @@ jobs:
           name: tests
           github-token: ${{ secrets.GH_PAT }}
 
-      - run: tar zxvf data.tar.gz
-      - run: ./build/tests-details
-      - run: ./build/tests-siege
+      - run: tar zxvf install.tar.gz
+      - run: ls -lR
+      # - run: ./build/tests-details
+      # - run: ./build/tests-siege

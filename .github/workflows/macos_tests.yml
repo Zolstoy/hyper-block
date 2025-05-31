@@ -28,9 +28,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           run-id: ${{ steps.get_run_id.outputs.value }}
-          name: tests
+          name: install
           github-token: ${{ secrets.GH_PAT }}
 
-      - run: tar zxvf data.tar.gz
-      - run: ./build/tests-details
-      - run: ./build/tests-siege
+      - run: tar zxvf install.tar.gz
+      - run: ./install/tests-details
+      - run: ./install/tests-siege
