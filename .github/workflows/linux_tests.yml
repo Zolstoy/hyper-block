@@ -1,4 +1,7 @@
 name: LINUX|TESTS
+permissions:
+  actions: read
+  contents: read
 on: 
   workflow_run:
     workflows: [LINUX|BUILD]

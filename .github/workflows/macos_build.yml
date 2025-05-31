@@ -1,4 +1,6 @@
 name: MACOS|BUILD
+permissions:
+  contents: read
 on:
   push:
     branches:
@@ -53,4 +55,3 @@ jobs:
         with:
           name: install
           path: install.tar.gz
-          

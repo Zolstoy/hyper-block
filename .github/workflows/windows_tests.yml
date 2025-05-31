@@ -1,4 +1,7 @@
 name: WINDOWS|TESTS
+permissions:
+  actions: read
+  contents: read
 on: 
   workflow_run:
     workflows: [WINDOWS|BUILD]

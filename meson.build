@@ -20,7 +20,7 @@ dependencies = [
   spdlog
 ]
 
-boost_program_options = dependency('boost', modules : ['program_options'])
+boost_program_options = dependency('boost', modules : ['program_options'], default_options: ['default_library=static'])
 gtest = dependency('gtest', default_options: ['default_library=static'])
 gtest_main = dependency('gtest_main', default_options: ['default_library=static'])
 
