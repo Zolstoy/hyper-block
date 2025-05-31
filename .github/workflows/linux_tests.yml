@@ -47,5 +47,5 @@ jobs:
 
       - run: tar zxvf install.tar.gz
 
-      - run: install/tests-details.exe
-
+      - run: install/bin/tests-details.exe
+      - run: install/bin/tests-siege.exe

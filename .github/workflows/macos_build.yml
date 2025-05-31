@@ -56,7 +56,13 @@ jobs:
         run: PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson setup --buildtype release --backend=ninja build --prefix="$(pwd)/install"
           
       - name: Run Meson install
-        run: meson install -C build
+        env:
+          BOOST_ROOT: "${{ github.workspace }}/boost/boost"
+          LDFLAGS: "-L/opt/homebrew/opt/llvm/lib -L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+          CPPFLAGS: "-I/opt/homebrew/opt/llvm/include"
+          CXX: "clang++"
+          LD: "lld"
+        run: PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson install -C build
 
       - name: Tar build and meson build
         run: tar -zcvf install.tar.gz install

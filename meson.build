@@ -11,7 +11,7 @@ endif
 boost_headers = dependency('boost')
 openssl = dependency('openssl')
 cereal = dependency('cereal')
-spdlog = dependency('spdlog')
+spdlog = dependency('spdlog', default_options: ['default_library=static'])
 
 dependencies = [
   boost_headers,
