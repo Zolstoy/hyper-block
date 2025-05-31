@@ -28,14 +28,14 @@ jobs:
       - name: Setup MSVC environment
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Run Meson compile
+      - name: Run Meson
         env:
           BOOST_ROOT: "${{ github.workspace }}/boost/boost"
         run: |
           pip install meson ninja
           mkdir install
           $PWD=pwd
-          meson setup --backend=ninja build --prefix="$PWD/install"
+          meson setup --backend=ninja build --prefix="$PWD/install --prefer-static"
           meson compile -C build -v
           meson install -C build
           dir install

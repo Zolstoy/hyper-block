@@ -9,6 +9,7 @@ jobs:
   tests:
     name: Tests
     runs-on: windows-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Get event json
         id: get_event_json
