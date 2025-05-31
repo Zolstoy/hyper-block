@@ -34,7 +34,8 @@ jobs:
         run: |
           pip install meson ninja
           mkdir install
-          meson setup --backend=ninja build --prefix=./install
+          $PWD=pwd
+          meson setup --backend=ninja build --prefix="$PWD/install"
           meson compile -C build -v
 
 
