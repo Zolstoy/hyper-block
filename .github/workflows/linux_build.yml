@@ -39,6 +39,7 @@ jobs:
           mkdir install
           meson setup --backend=ninja build --prefix="$(pwd)/install"
           meson compile -C build -v
+          meson install -C build
 
       - name: Tar build and meson build
         run: tar -zcvf install.tar.gz install
