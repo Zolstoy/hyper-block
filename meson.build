@@ -2,7 +2,7 @@ project('hyper-block', 'cpp', version : '0.1.0', meson_version : '>=1.0.0')
 
 if host_machine.system() == 'windows'
  override_args = ['cpp_std=vc++latest']
- common_cpp_args =  ['-D_WIN32_WINNT=0x0601', '/bigobj']
+ common_cpp_args =  ['-D_WIN32_WINNT=0x0601', '/bigobj', '-DBOOST_PROGRAM_OPTIONS_DYN_LINK=1']
 else
  override_args = ['cpp_std=c++23']
  common_cpp_args = []
@@ -20,7 +20,7 @@ dependencies = [
   spdlog
 ]
 
-boost_program_options = dependency('boost', modules : ['program_options'], default_options: ['default_library=static'])
+boost_program_options = dependency('boost', modules : ['program_options'])
 gtest = dependency('gtest', default_options: ['default_library=static'])
 gtest_main = dependency('gtest_main', default_options: ['default_library=static'])
 
