@@ -40,13 +40,13 @@ jobs:
 
 
       - name: Tar build and meson build
-        run: tar -zcvf data.tar.gz build/tests-details.exe build/tests-siege.exe
+        run: tar -zcvf install.tar.gz install
 
       - name: Upload build dir
         uses: actions/upload-artifact@v4
         with:
-          name: tests
-          path: data.tar.gz
+          name: install
+          path: install.tar.gz
           if-no-files-found: error
           overwrite: true
           include-hidden-files: true

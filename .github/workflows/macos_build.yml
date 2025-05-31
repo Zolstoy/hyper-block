@@ -41,7 +41,7 @@ jobs:
           CXX: "clang++"
           LD: "lld"
         run: |
-          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson setup --backend=ninja build --prefix=$(pwd)/install
+          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson setup --backend=ninja build --prefix="$(pwd)/install"
           PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson compile -C build -v
 
       - name: Tar build and meson build
