@@ -2,6 +2,16 @@ name: WINDOWS|BUILD
 permissions:
   contents: read
   actions: read
+  checks: none
+  deployments: none
+  issues: none
+  discussions: none
+  packages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
+
 on: 
   push:
     branches:
@@ -31,19 +41,18 @@ jobs:
       - name: Setup MSVC environment
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Run Meson
+      - name: Install Meson and Ninja
+        run: pip install meson ninja
+
+      - name: Run Meson setup
         env:
           BOOST_ROOT: "${{ github.workspace }}/boost/boost"
         run: |
-          pip install meson ninja
-          mkdir install
           $PWD=pwd
-          meson setup --backend=ninja build --prefix="$PWD/install --prefer-static"
-          meson compile -C build -v
-          meson install -C build
-          dir install
-          dir build
+          meson setup --backend=ninja build --prefix="$PWD/install"
 
+      - name: Run Meson install
+        run: meson install -C build
 
       - name: Tar build and meson build
         run: tar -zcvf install.tar.gz install

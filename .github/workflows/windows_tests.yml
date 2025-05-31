@@ -1,7 +1,17 @@
 name: WINDOWS|TESTS
 permissions:
-  actions: read
   contents: read
+  actions: read
+  checks: none
+  deployments: none
+  issues: none
+  discussions: none
+  packages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
+
 on: 
   workflow_run:
     workflows: [WINDOWS|BUILD]
@@ -36,4 +46,5 @@ jobs:
           github-token: ${{ secrets.GH_PAT }}
 
       - run: tar zxvf install.tar.gz
-      - run: Dir
+
+      - run: install/tests-details.exe

@@ -1,7 +1,17 @@
 name: LINUX|TESTS
 permissions:
-  actions: read
   contents: read
+  actions: read
+  checks: none
+  deployments: none
+  issues: none
+  discussions: none
+  packages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
+
 on: 
   workflow_run:
     workflows: [LINUX|BUILD]
@@ -36,6 +46,6 @@ jobs:
           github-token: ${{ secrets.GH_PAT }}
 
       - run: tar zxvf install.tar.gz
-      - run: ls -lR
-      # - run: ./build/tests-details
-      # - run: ./build/tests-siege
+
+      - run: install/tests-details.exe
+

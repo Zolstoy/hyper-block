@@ -11,6 +11,7 @@ permissions:
   repository-projects: none
   security-events: none
   statuses: none
+
 on: 
   push:
     branches:
@@ -43,15 +44,16 @@ jobs:
           version: latest
           platform: x64
 
-      - name: Run Meson compile
+      - name: Install Meson and Ninja
+        run: pip install meson ninja
+
+      - name: Run Meson setup
         env:
           BOOST_ROOT: "${{ github.workspace }}/boost/boost"
-        run: |
-          pip install meson ninja
-          mkdir install
-          meson setup --backend=ninja build --prefix="$(pwd)/install --prefer-static"
-          meson compile -C build -v
-          meson install -C build
+        run: meson setup --buildtype release --backend=ninja build --prefix="$(pwd)/install"
+
+      - name: Run Meson install
+        run: meson install -C build
 
       - name: Tar build and meson build
         run: tar -zcvf install.tar.gz install

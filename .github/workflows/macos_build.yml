@@ -1,6 +1,17 @@
 name: MACOS|BUILD
 permissions:
   contents: read
+  actions: read
+  checks: none
+  deployments: none
+  issues: none
+  discussions: none
+  packages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
+
 on:
   push:
     branches:
@@ -27,7 +38,7 @@ jobs:
           toolset: clang
           arch: aarch64
 
-      - name: Install clang
+      - name: Install Clang
         run: |
           brew install llvm@20
           brew install lld@20
@@ -35,17 +46,17 @@ jobs:
       - name: Install Meson and Ninja
         run: pip install meson ninja
 
-      - name: Run Meson
+      - name: Run Meson setup
         env:
           BOOST_ROOT: "${{ github.workspace }}/boost/boost"
           LDFLAGS: "-L/opt/homebrew/opt/llvm/lib -L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
           CPPFLAGS: "-I/opt/homebrew/opt/llvm/include"
           CXX: "clang++"
           LD: "lld"
-        run: |
-          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson setup --backend=ninja build --prefix="$(pwd)/install --prefer-static"
-          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson compile -C build -v
-          PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson install -C build
+        run: PATH="/opt/homebrew/opt/llvm@20/bin:$PATH" meson setup --buildtype release --backend=ninja build --prefix="$(pwd)/install"
+          
+      - name: Run Meson install
+        run: meson install -C build
 
       - name: Tar build and meson build
         run: tar -zcvf install.tar.gz install
