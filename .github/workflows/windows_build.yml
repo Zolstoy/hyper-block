@@ -37,6 +37,9 @@ jobs:
           $PWD=pwd
           meson setup --backend=ninja build --prefix="$PWD/install"
           meson compile -C build -v
+          meson install -C build
+          dir install
+          dir build
 
 
       - name: Tar build and meson build
