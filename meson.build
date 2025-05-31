@@ -2,7 +2,7 @@ project('hyper-block', 'cpp', version : '0.1.0', meson_version : '>=1.6.0')
 
 if host_machine.system() == 'windows'
  override_args = ['cpp_std=vc++latest']
- common_cpp_args =  ['-DWIN32_LEAN_AND_MEAN', '-D_WIN32_WINNT=0x0601', '/bigobj']
+ common_cpp_args =  ['-DWIN32_LEAN_AND_MEAN', '-D_WIN32_WINNT=0x0601', '/bigobj', '-DBOOST_PROGRAM_OPTIONS_DYN_LINK=1']
 else
  override_args = ['cpp_std=c++23']
  common_cpp_args = []

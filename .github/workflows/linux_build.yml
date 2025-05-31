@@ -37,7 +37,7 @@ jobs:
         run: |
           pip install meson ninja
           mkdir install
-          meson setup --backend=ninja build --prefix="$(pwd)/install"
+          meson setup --backend=ninja build --prefix="$(pwd)/install --prefer-static"
           meson compile -C build -v
           meson install -C build
 
@@ -49,6 +49,3 @@ jobs:
         with:
           name: install
           path: install.tar.gz
-          if-no-files-found: error
-          overwrite: true
-          include-hidden-files: true

@@ -50,6 +50,3 @@ jobs:
         with:
           name: install
           path: install.tar.gz
-          if-no-files-found: error
-          overwrite: true
-          include-hidden-files: true
